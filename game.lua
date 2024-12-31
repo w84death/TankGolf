@@ -16,8 +16,8 @@ end
 
 function Game:reset()
     self.playfield = Playfield.new()
-    self.player1 = Player.new(40, 200, {1, 0, 0})  -- Changed to normalized RGB
-    self.player2 = Player.new(580, 200, {0, 0, 1})
+    self.player1 = Player.new(40, 200, {1, 0, 0})  -- Red player facing right (0 degrees)
+    self.player2 = Player.new(580, 200, {0, 0, 1}, math.pi)  -- Blue player facing left (180 degrees)
     self.balls = {}
     self.gameOver = false
     self.winner = nil
@@ -55,7 +55,7 @@ function Game:checkBallCollisions()
                 table.remove(self.balls, i)
             end
         else
-            if self:checkTankHit(shadowX, shadowY, self.player1) then
+            if self:checkTankHit(ball.x, ball.y, self.player1) then  -- Fixed: shadowX, shadowY -> ball.x, ball.y
                 self.player1.lives = self.player1.lives - 1
                 if self.player1.lives <= 0 then
                     self.gameOver = true

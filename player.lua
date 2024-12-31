@@ -1,14 +1,14 @@
 local Player = {}
 Player.__index = Player
 
-function Player.new(x, y, color)
+function Player.new(x, y, color, startAngle)
     local self = setmetatable({}, Player)
     self.x = x
     self.y = y
     self.width = 20
     self.height = 20
     self.color = color
-    self.angle = 0
+    self.angle = startAngle or 0  -- Use provided angle or default to 0
     self.power = 0
     self.turretLength = 30  -- Length of the turret line
     self.isCharging = false
