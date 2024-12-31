@@ -27,13 +27,7 @@ function Ball:update(dt)
     self.x = self.x + math.cos(self.angle) * moveDistance
     self.y = self.y + math.sin(self.angle) * moveDistance
     
-    -- Deactivate if traveled full distance
-    if self.distance >= self.totalDistance then
-        self:deactivate()
-        return
-    end
-    
-    -- Check wall collisions
+    -- Check wall collisions first
     local collision, wall, wallIndex = game.playfield:checkCollision(
         self.x - self.radius, 
         self.y - self.radius, 
@@ -42,13 +36,16 @@ function Ball:update(dt)
     )
     
     if collision then
-        -- First bounce
+        -- Calculate new angle based on wall orientation
         if wall[3] < wall[4] then  -- Vertical wall
             self.angle = math.pi - self.angle
         else  -- Horizontal wall
             self.angle = -self.angle
         end
+        
+        -- Reduce total distance and speed after bounce
         self.totalDistance = self.totalDistance * 0.7
+        self.speed = self.speed * 0.7
         
         -- Then try to remove wall if it's not a boundary
         if wallIndex > 4 then  -- Not a boundary wall
@@ -60,6 +57,15 @@ function Ball:update(dt)
         if self.totalDistance < 50 then
             self:deactivate()
         end
+        
+        -- Slightly move the ball away from the wall to prevent multiple collisions
+        self.x = self.x + math.cos(self.angle) * self.radius
+        self.y = self.y + math.sin(self.angle) * self.radius
+    end
+    
+    -- Deactivate if traveled full distance
+    if self.distance >= self.totalDistance then
+        self:deactivate()
     end
 end
 
